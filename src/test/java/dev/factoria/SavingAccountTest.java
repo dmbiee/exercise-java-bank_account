@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 public class SavingAccountTest {
 
-    Account account;
+    SavingAccount account;
 
     @BeforeEach
     void initializeClass() {
