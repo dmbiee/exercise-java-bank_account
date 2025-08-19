@@ -15,10 +15,11 @@ public class Account {
             throw new IllegalArgumentException("Annual rate cannot be less than zero!");
         if (annualRate > 1)
             throw new IllegalArgumentException("Annual rate cannot be greater than one!");
+
         this.balance = balance;
+        this.annualRate = annualRate;
         this.depositCount = 0;
         this.withdrawCount = 0;
-        this.annualRate = annualRate;
         this.monthlyFee = 0;
     }
 
@@ -57,6 +58,10 @@ public class Account {
         final int MONTH_IN_YEAR = 12;
         float monthlyInterest = (annualRate / MONTH_IN_YEAR) * balance;
         balance += monthlyInterest;
+    }
+
+    public void setMonthlyFee(float monthlyFee) {
+        this.monthlyFee = monthlyFee;
     }
 
     public float getBalance() {

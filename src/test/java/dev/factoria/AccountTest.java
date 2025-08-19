@@ -3,6 +3,7 @@ package dev.factoria;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,108 @@ public class AccountTest {
     @BeforeEach
     void initializeClass() {
         account = new Account(5000, 0.1f);
+    }
+
+    @Test
+    void testConstructor_ShouldThrowException_WhenBalanceLessThanZero() {
+
+        String expected = "Balance cannot be less than zero!";
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> new Account(-100, 0.05f));
+
+        String result = ex.getMessage();
+
+        assertThat(result, is(equalTo(expected)));
+    }
+
+    @Test
+    void testConstructor_ShouldThrowException_WhenAnnualRateLessThanZero() {
+
+        String expected = "Annual rate cannot be less than zero!";
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> new Account(100, -0.05f));
+
+        String result = ex.getMessage();
+
+        assertThat(result, is(equalTo(expected)));
+    }
+
+    @Test
+    void testConstructor_ShouldThrowException_WhenAnnualRateGreaterThanOne() {
+
+        String expected = "Annual rate cannot be greater than one!";
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> new Account(100, 1.5f));
+
+        String result = ex.getMessage();
+
+        assertThat(result, is(equalTo(expected)));
+    }
+
+    @Test
+    void testDeposit_ShouldThrowException_WhenDepositAmountLessZero() {
+
+        String expected = "Amount cannot be less than zero!";
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> account.deposit(-50));
+
+        String result = ex.getMessage();
+
+        assertThat(result, is(equalTo(expected)));
+
+    }
+
+    @Test
+    void testWithdraw_ShouldThrowException_WhenWithdrawAmountLessZero() {
+
+        String expected = "Amount cannot be less than zero!";
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> account.withdraw(-50));
+
+        String result = ex.getMessage();
+
+        assertThat(result, is(equalTo(expected)));
+    }
+
+    @Test
+    void testWithdraw_ShouldThrowException_WhenWithdrawAmountGreaterBalance() {
+
+        String expected = "Insufficient balance to withdraw the requested amount!";
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> account.withdraw(150000));
+
+        String result = ex.getMessage();
+
+        assertThat(result, is(equalTo(expected)));
+    }
+
+    @Test
+    void testMonthlyStatement_ShouldThrowException_WhenMonthlyFeeGreaterBalance() {
+
+        String expected = "Insufficient balance to cover the monthly fee!";
+
+        account.setMonthlyFee(10000);
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> account.monthlyStatement());
+
+        String result = ex
+                .getMessage();
+
+        assertThat(result, is(equalTo(expected)));
     }
 
     @Test
@@ -95,6 +198,7 @@ public class AccountTest {
 
     @Test
     void testPrintInfo() {
+
         String excepted = "Balance: 5000,00, Deposits: 0, Withdrawals: 0, Annual Rate: 0,10, Monthly Fee: 0,00";
 
         String result = account.printInfo();
